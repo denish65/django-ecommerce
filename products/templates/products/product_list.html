@@ -1,0 +1,53 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="container">
+    <!-- <h1>Product List</h1>
+    <ul>
+        {% for product in products %}
+        <li>
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p>${{ product.price }}</p>
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150px" height="150px">
+        </li>
+        {% endfor %}
+    </ul> -->
+
+
+
+
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>product.name </th>
+            <th>product.description</th>
+            <th>product.price </th>
+            <th>product.image.</th>
+            <th>details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>${{ product.price }}</td>
+            <td><img src="{{ product.image.url }}" alt="{{ product.name }}" width="150px" height="150px"></td>
+            <td>more</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<script>
+    // new DataTable('#example');
+
+    $(document).ready(function () {
+    $('#example').DataTable();
+});
+</script>
+{% endblock %}   
