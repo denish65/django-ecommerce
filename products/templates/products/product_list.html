@@ -1,53 +1,52 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
 {% load static %}
-<div class="container">
-    <!-- <h1>Product List</h1>
-    <ul>
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Product List</h1>
+
+    <!-- Search Bar -->
+    <div class="mb-4">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for products...">
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="productGrid">
         {% for product in products %}
-        <li>
-            <h2>{{ product.name }}</h2>
-            <p>{{ product.description }}</p>
-            <p>${{ product.price }}</p>
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="150px" height="150px">
-        </li>
+        <div class="col product-item">
+            <div class="card h-100">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <p class="card-text"><strong>${{ product.price }}</strong></p>
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul> -->
-
-
-
-
-<table id="example" class="display" style="width:100%">
-    <thead>
-        <tr>
-            <th>product.name </th>
-            <th>product.description</th>
-            <th>product.price </th>
-            <th>product.image.</th>
-            <th>details</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-
-        <tr>
-            <td>{{ product.name }}</td>
-            <td>{{ product.description }}</td>
-            <td>${{ product.price }}</td>
-            <td><img src="{{ product.image.url }}" alt="{{ product.name }}" width="150px" height="150px"></td>
-            <td>more</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    </div>
 </div>
-<script>
-    // new DataTable('#example');
 
-    $(document).ready(function () {
-    $('#example').DataTable();
-});
+<!-- Optional Bootstrap for styling -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        const products = document.querySelectorAll('.product-item');
+
+        products.forEach(product => {
+            const productName = product.querySelector('.card-title').textContent.toLowerCase();
+            const productDescription = product.querySelector('.card-text').textContent.toLowerCase();
+
+            if (productName.includes(searchValue) || productDescription.includes(searchValue)) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    });
 </script>
-{% endblock %}   
+{% endblock %}
+ 

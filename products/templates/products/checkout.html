@@ -1,2 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+
+
 <h1>Checkout</h1>
-<p>Enter your shipping details and complete the purchase.</p>
+<p>Thank you for your order!</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Confirm Order</button>
+</form>
+</div>
+
+{% endblock %} 

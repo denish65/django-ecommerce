@@ -1,23 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Cart</title>
-</head>
-<body>
-    <h1>Your Cart</h1>
-    {% if cart %}
-        <ul>
-            {% for item in cart.items.all %}
-            <li>
-                <h2>{{ item.product.name }}</h2>
-                <p>Quantity: {{ item.quantity }}</p>
-                <p>Price: ${{ item.product.price }}</p>
-            </li>
-            {% endfor %}
-        </ul>
-        <p>Total: ${{ cart.items.all|sum:"product.price" }}</p>
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
-</body>
-</html>
+ {% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <h1 class="text-center">Your Cart</h1>
+    <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <form method="POST" id="checkout-form" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                {% if cart.cartitem_set.all %}
+                    <ul class="list-group mb-3">
+                        {% for item in cart.cartitem_set.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <input type="checkbox" name="selected_items" value="{{ item.id }}" class="form-check-input me-2">
+                                    <strong>{{ item.product.name }}</strong>  
+                                    <span class="text-muted">x{{ item.quantity }}</span>
+                                    <span class="ms-3">${{ item.product.price }}</span>
+                                </div>
+                                <!-- <form method="POST" action="{% url 'remove_from_cart' item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                </form> -->
+
+                                <a href="#" class="btn btn-danger btn-sm remove-item" data-item-id="{{ item.id }}">Remove</a>
+
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <button type="submit" class="btn btn-success w-100">Proceed to Checkout</button>
+                {% else %}
+                    <p class="text-center text-muted">Your cart is empty. Start shopping!</p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Handle item removal
+    $('.remove-item').on('click', function(event) {
+        event.preventDefault(); // Prevent the default link behavior
+        var itemId = $(this).data('item-id'); // Get the item ID
+
+        $.ajax({
+            type: 'POST',
+            url: '/cart/remove/' + itemId + '/', // URL to remove the item
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}' // Include CSRF token
+            },
+            success: function(response) {
+                // On success, remove the item from the list
+                location.reload(); // Reload the page to reflect changes
+            },
+            error: function(xhr, status, error) {
+                // Handle error (e.g., show an error message)
+                alert('An error occurred: ' + error);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %} 
