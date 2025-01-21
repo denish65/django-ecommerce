@@ -7,7 +7,21 @@
 
 
 <h1>Checkout</h1>
-<p>Thank you for your order!</p>
+{% if order_items %}
+    <h2>Your Order</h2>
+    <ul class="list-group mb-3">
+        {% for item in order_items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <strong>{{ item.product.name }}</strong>
+                <span class="text-muted">x{{ item.quantity }}</span>
+                <span class="ms-3">${{ item.product.price }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Total: ${{ total }}</p>
+{% else %}
+    <p>No items selected for checkout.</p>
+{% endif %}
 <form method="POST">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Confirm Order</button>
